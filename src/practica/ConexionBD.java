@@ -89,26 +89,48 @@ public class ConexionBD {
         return obj;
     }
 
-    public void createTable(Object[][] t, Connection cn) throws SQLException {
+    public void createTable(Object[][] t, Connection cn, String sheet) throws SQLException {
         Statement s;
         ResultSet rs;
         PreparedStatement stmt = null;
+        String sql;
         try {
-            for (int i = 0; i < t.length; i++) {
+            sql = "CREATE TABLE " + sheet + "(id INTEGER not NULL, ";
+            for (int e = 0; e < t[0].length; e++) {
+                sql += t[0][e] + " VARCHAR(255), ";
+            }
+            sql += " PRIMARY KEY ( id ))";
+            System.out.println(sql);
+            s = cn.createStatement();
+            s.executeUpdate(sql);
+            System.out.println("creada tabla");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        try {
+            for (int i = 1; i < t.length; i++) {
+                sql = "insert into " + db + "." + sheet + " values(" + i + ",";
                 for (int j = 0; j < t[0].length; j++) {
-
-                    stmt = cn.prepareStatement("insert into  values(?)");
-                    stmt.setString(1, (String) t[i][j]);
-                    int nRows = stmt.executeUpdate();
-                    System.out.println(j + " records inserted");
+                    if (j == t[0].length - 1) {
+                        sql += "'" + (String) t[i][j] + "'";
+                    } else {
+                        sql += "'" + (String) t[i][j] + "',";
+                    }
+                    //stmt.setString(1, (String) t[i][j]);
                 }
+                sql += ")";
+                System.out.println(sql);
+                stmt = cn.prepareStatement(sql);
+                int nRows = stmt.executeUpdate();
+                System.out.println("record inserted");
             }
             rs = stmt.executeQuery("select * from emp");
             while (rs.next()) {
                 System.out.println(rs.getInt(1));
             }
-            cn.close();
+            //cn.close();
         } catch (Exception e) {
+            System.out.println("excepcion");
             System.out.println(e);
         }
     }
