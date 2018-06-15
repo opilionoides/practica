@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -19,17 +20,24 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Practica {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
         //listf("C:/Profesores");
         //readXLSXFile("C:/Profesores/Notas.xlsx");
-        String b="was";
         Date d = new Date(0, 0, 0);
         System.out.println(d.getClass());
-        /*ConexionBD c=new ConexionBD();
+        ConexionBD c=new ConexionBD();
         Connection cn=c.Conectar();
-        Object[][] o= c.select(cn);
+        ArrayList a=getArray();
+        System.out.println("array");
+        //Object[][] o= c.select(cn);
+        Object[][] tabla=(Object[][]) a.get(0);
+        String nombreTabla=(String)a.get(1);
+        System.out.println(tabla.length);
+        System.out.println(nombreTabla);
+        c.createTable(tabla, cn, nombreTabla);
+        System.out.println("tabla");
         c.close(cn);
-        */
+        
     }
 
     public static void readXLSXFile(String path) throws IOException {
@@ -87,7 +95,7 @@ public class Practica {
         XSSFSheet sheet = null;
         //double[][] nums = null;
         try {
-            FileInputStream inputStream = new FileInputStream("TEST.xlsx");
+            FileInputStream inputStream = new FileInputStream("test.xlsx");
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
             // get sheet number
             int sheetCn = workbook.getNumberOfSheets();
